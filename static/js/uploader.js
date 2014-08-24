@@ -90,6 +90,7 @@
             form.append($('<input type="hidden" >').attr('name', prop).attr('value', params[prop]));
         }
         form.append($('<input type="hidden">').attr('name', 'format').attr('value', 'scripts'));
+        form.append($('<input type="hidden" name="csrf_token" value="$csrf_token()">'));
         form.append($('<input type="hidden">').attr('name', 'callback').attr('value', _options._callback_prefix + frameid));
         bindUploadedHandler(target);
         return form;
@@ -141,7 +142,6 @@
 
                         drawImageIOSFix(hideContext, image, 0, 0, upimgWidth, upimgHeight, 0, 0, WIDTH, HEIGHT);
                         urlStr = hideCanvas.toDataURL('image/jpeg');
-                        
                         var filestr = urlStr.replace('=', '_');
                         form.append('<input name="img" type="hidden" value="' + filestr + '">');
                         form.submit(function(e) { e.stopPropagation(); }).submit();

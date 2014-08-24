@@ -7,5 +7,30 @@
     "gulp-rev": "^1.1.0",
     "gulp-ngmin": "^0.3.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "name": "Uploader",
+  "version": "1.0.0",
+  "description": "cross site image upload and client side compression supported",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Duan112358/Uploader"
+  },
+  "keywords": [
+    "image",
+    "uploader",
+    "client",
+    "compression",
+    "cross",
+    "site"
+  ],
+  "author": "duan112358@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Duan112358/Uploader/issues"
+  },
+  "homepage": "https://github.com/Duan112358/Uploader"
 }
