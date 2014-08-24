@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Uploader</title>
+    <link rel="stylesheet" href="/static/dist/app.css"/>
+</head>
+<body>
+    <div class="uploader-container">
+       <span class="preview camera">
+       </span>
+       <span class="preview plus">
+       </span>
+    </div>
+    <script type="text/javascript" src="/static/js/zepto.js"></script>
+    <script type="text/javascript" src="/static/js/compressImg.js"></script>
+    <script type="text/javascript" src="/static/js/uploader.js"></script>
+    <script type="text/javascript">
+        Uploader.init({
+            target:'.camera, .plus',
+            params: {
+                'category': 1,
+                'userid': 'asdsdad',
+                'username': 'duanhong'
+            },
+            action: '/',
+            callback: function(){
+                console.log('hello uploader');
+            }
+       });
+    </script>
+</body>
+</html>
