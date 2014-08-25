@@ -41,7 +41,7 @@
             if(target.attr('disabled')){
                 target.removeAttr('disabled').css('background-image', target.data('background-image'))
                     .empty();
-                _options.cancel.apply(target);
+                _options.cancel.call(target);
                 return false;
             }
             if(target.data('inited')){
@@ -75,11 +75,8 @@
         window[callback_prefix + frameid] = function(data){
             $('#' + frameid).remove();
             _options._cache['fileinput_' + frameid].val('');
-            if(!data.error){
-                target.css('background-image', 'url(' + data.url + ')');
-            }
             target.removeClass('round').append('<span class="close"></span>');
-            _options.complete.apply(target, data);
+            _options.complete.call(target, data);
             delete window[callback_prefix + frameid];
         };
     }
