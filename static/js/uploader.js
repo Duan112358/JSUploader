@@ -10,6 +10,7 @@
         _options._target = $(options.target) || $('input[type=file]')[0];
         _options.action = options.action || location.href;
         _options.params = options.params || {};
+        _options.domain = options.domain || false;
         _options._callback_prefix = 'uploader_handler_';
         _options._fileinput_prefix = 'fileinput_';
         _options.complete = options.complete || function(){};
@@ -67,6 +68,9 @@
         var frameid = target.data('inputid');
         var callback_prefix = _options._callback_prefix;
         $('body').append($('<iframe style="display:none;">').attr('id', frameid).attr('name',frameid));
+        if(_options.domain){
+            window.domain = _options.domain;
+        }
         window[callback_prefix + frameid] = function(data){
             $('#' + frameid).remove();
             _options._cache['fileinput_' + frameid].val('');
