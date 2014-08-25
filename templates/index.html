@@ -24,8 +24,11 @@
                 'username': 'duanhong'
             },
             action: '/',
-            callback: function(){
-                console.log('hello uploader');
+            complete: function(data){
+               console.log(this); 
+            },
+            cancel: function(){
+                console.log(this);
             }
        });
     </script>

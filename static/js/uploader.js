@@ -5,14 +5,15 @@
 
     Uploader.init = function(options){
         _options = options || {};
-        
+        _options._cache = {}; 
         //specify by ID will be more GOOD.
         _options._target = $(options.target) || $('input[type=file]')[0];
         _options.action = options.action || location.href;
         _options.params = options.params || {};
         _options._callback_prefix = 'uploader_handler_';
         _options._fileinput_prefix = 'fileinput_';
-        _options.callback = options.callback || function(){};
+        _options.complete = options.complete || function(){};
+        _options.cancel = options.cancel || function(){};
 
         if(_options._target.length > 1){
             for(var _id=0,_count = _options._target.length, _target; _id < _count; _id++){
@@ -38,15 +39,17 @@
             if(target.attr('disabled')){
                 target.removeAttr('disabled').css('background-image', target.data('background-image'))
                     .empty();
+                _options.cancel.apply(target);
                 return false;
             }
             if(target.data('inited')){
-                fileinput = $('#fileinput_' + target.data('inputid'));
+                fileinput = _options._cache['fileinput_' + inputid];
             }else{
                 fileinput = $('<input type="file" accept="image/*" class="dh_uploader" style="display:none;">').attr('id', 'fileinput_'+inputid);
-                $('body').append(fileinput);
+                _options._cache['fileinput_' + inputid] = fileinput;
                 target.data('inited', true);
-            } fileinput.unbind('change');
+            }
+            fileinput.unbind('change');
             fileinput.on('change', function(e){
                 var file = e.target.files[0];
                 if(file){ 
@@ -66,12 +69,12 @@
         $('body').append($('<iframe style="display:none;">').attr('id', frameid).attr('name',frameid));
         window[callback_prefix + frameid] = function(data){
             $('#' + frameid).remove();
-            $('#fileinput_' + frameid).val('');
+            _options._cache['fileinput_' + frameid].val('');
             if(!data.error){
                 target.css('background-image', 'url(' + data.url + ')');
             }
             target.removeClass('round').append('<span class="close"></span>');
-            _options.callback(data);
+            _options.complete.apply(target, data);
             delete window[callback_prefix + frameid];
         };
     }
