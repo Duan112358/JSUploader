@@ -8,6 +8,7 @@
         _options._cache = {}; 
         //specify by ID will be more GOOD.
         _options._target = $(options.target) || $('input[type=file]')[0];
+        _options.imgfield = options.imgfield || 'img';
         _options.action = options.action || location.href;
         _options.params = options.params || {};
         _options.domain = options.domain || false;
@@ -93,8 +94,7 @@
         target.attr('disabled', true);
         for(var prop in params){
             if(params.hasOwnProperty(prop))
-                continue;
-            form.append($('<input type="hidden" >').attr('name', prop).attr('value', params[prop]));
+                form.append($('<input type="hidden" >').attr('name', prop).attr('value', params[prop]));
         }
         form.append($('<input type="hidden">').attr('name', 'format').attr('value', 'scripts'));
         form.append($('<input type="hidden" name="csrf_token" value="$csrf_token()">'));
@@ -150,12 +150,12 @@
                         drawImageIOSFix(hideContext, image, 0, 0, upimgWidth, upimgHeight, 0, 0, WIDTH, HEIGHT);
                         urlStr = hideCanvas.toDataURL('image/jpeg');
                         var filestr = urlStr.replace('=', '_');
-                        form.append('<input name="img" type="hidden" value="' + filestr + '">');
+                        form.append($('<input type="hidden">').attr('name', options.imgfield).attr('value', filestr));
                         form.submit(function(e) { e.stopPropagation(); }).submit();
                     }    
                 }else{
                     var filestr = urlStr.replace('=', '_');
-                    form.append('<input name="img" type="hidden" value="' + filestr + '">');
+                    form.append($('<input type="hidden">').attr('name', options.imgfield).attr('value', filestr));
                     form.submit(function(e) { e.stopPropagation(); }).submit();
                 }
             }
