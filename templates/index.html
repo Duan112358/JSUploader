@@ -23,10 +23,11 @@
                 'userid': 'asdsdad',
                 'username': 'duanhong'
             },
-            //domain:'example.com',
+            domain:'localhost',
             action: '/',
             complete: function(data){
-               this.css('background-image', data.url); 
+               console.log(data);
+               this.style.backgroundImage = 'url("' + data.url + '")'; 
             },
             cancel: function(){
                 console.log(this);

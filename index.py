@@ -65,7 +65,7 @@ class Upload():
             result['url'] = savedurl
             result['msg'] = 'OK'
             if callback and jsformat:
-                return '<script type="text/javascript">window.parent.%s(%s)</script>' % (callback, json.dumps(result))
+                return '<script type="text/javascript">window.parent.%s(%s);</script>' % (callback, json.dumps(result))
         raise web.seeother('/')
 
 
