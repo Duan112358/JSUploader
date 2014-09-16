@@ -49,7 +49,6 @@
 
     Uploader.init = function(options) {
         _options = options || {};
-        _options._cache = {};
         //specify by ID will be more GOOD.
         _options._target = document.querySelectorAll(options.target) || document.querySelector('input[type=file]');
 
@@ -70,57 +69,59 @@
         if (_options._target.length > 1) {
             for (var _id = 0, _count = _options._target.length, _target; _id < _count; _id++) {
                 _target = _options._target[_id];
-                bindTarget(_target);
+                bindTarget(_target, _id);
             }
         } else {
             if (_options._target.length == 0)
                 return;
-            bindTarget(_options._target);
+            bindTarget(_options._target, 0);
         }
     }
 
-    function bindTarget(target) {
-        var inputid = Date.now().toString();
+    function bindTarget(target, id) {
+        var inputid = Date.now() + '_' + id;
         var fileinput;
         target.setAttribute('data-inputid', inputid);
         target.setAttribute('data-background-image', target.style.backgroundImage);
         target.style.position = 'relative';
 
+        // setup file input binding.
+        if (target.getAttribute('data-inited')) {
+            fileinput = document.getElementById('fileinput_' + inputid);
+        } else {
+            fileinput = createElement('input', {
+                'type': 'file',
+                'accept': 'image/*',
+                'id': 'fileinput_' + inputid
+            }, {
+                'display': 'none'
+            });
+
+            target.setAttribute('data-inited', true);
+        }
+        fileinput.removeEventListener('change');
+        fileinput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                addClass(target, 'round');
+                var form = initUploadForm(target);
+                previewImage(form, file);
+            }
+        }, false);
+        document.body.appendChild(fileinput);
+        
+        // bind target event handing.
         target.removeEventListener('click');
         target.addEventListener('click', function() {
-            if (target.getAttribute('disabled')) {
-                target.removeAttr('disabled');
-                target.style.backgroundImage = 'url("' + target.getAttribute('data-background-image') + '")';
+            if(target.getAttribute('disabled')){
+                target.removeAttribute('disabled');
+                target.style.backgroundImage = target.getAttribute('data-background-image');
                 target.innerHTML = "";
                 _options.cancel.call(target);
-                return false;
+                return false; 
+            }else{
+                fileinput.click();
             }
-            if (target.getAttribute('data-inited')) {
-                fileinput = _options._cache['fileinput_' + inputid];
-            } else {
-                fileinput = createElement('input', {
-                    'type': 'file',
-                    'accept': 'image/*',
-                    'className': 'dh_uploader',
-                    'id': 'fileinput_' + inputid
-                }, {
-                    'display': 'none'
-                });
-
-                _options._cache['fileinput_' + inputid] = fileinput;
-                target.setAttribute('data-inited', true);
-            }
-            fileinput.removeEventListener('change');
-            fileinput.addEventListener('change', function(e) {
-                var file = e.target.files[0];
-                if (file) {
-                    addClass(target, 'round');
-                    var form = initUploadForm(target);
-                    previewImage(form, file);
-                }
-            }, false);
-            document.body.appendChild(fileinput);
-            fileinput.click();
         }, false);
     }
 
@@ -137,21 +138,18 @@
         document.body.appendChild(iframe);
 
         if (_options.domain) {
-            window.domain = _options.domain;
+            document.domain = _options.domain;
         }
 
-        window.parent[callback_prefix + frameid] = function(data) {
+        window[callback_prefix + frameid] = function(data) {
             var iframe = document.getElementById(frameid);
-            if (iframe) {
-                document.body.removeChild(iframe);
-            }
-            _options._cache['fileinput_' + frameid].setAttribute('value', '');
+            document.body.removeChild(iframe);
+            document.getElementById('fileinput_' + frameid).setAttribute('value', '');
 
             removeClass(target, 'round');
-            target.append(createElement('span', null, {
-                'className': 'close'
-            }));
-            _options.complete.apply(target, data);
+            var close = createElement('span', {'class':'close'});
+            target.appendChild(close);
+            _options.complete.call(target, data);
             delete window[callback_prefix + frameid];
         };
     }
